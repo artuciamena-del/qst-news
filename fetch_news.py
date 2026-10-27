@@ -1,21 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-QST عربي — نظام جمع الأخبار التلقائي بالذكاء الاصطناعي
-يجلب الأخبار من مصادر RSS العربية، يعيد صياغتها بمفتاح API (OpenAI / Groq / أي خدمة متوافقة)،
-ويُولّد ملف articles.json الذي يقرأه الموقع. يعمل على GitHub Actions مجاناً كل ساعة.
-
-الإعداد: ضع المفتاحين في Secrets في مستودع GitHub:
-  OPENAI_API_KEY   — مفتاح خدمة الذكاء الاصطناعي (Groq مجاني للاستخدام الخفيف)
-  OPENAI_BASE_URL  — مثال: https://api.groq.com/openai/v1  (اختياري، الافتراضي OpenAI)
-  OPENAI_MODEL     — مثال: llama-3.3-70b-versatile  أو gpt-4o-mini
+QST عربي - نظام جمع الاخبار التلقائي بالذكاء الاصطناعي
+مزودو الذكاء الاصطناعي (يُجرَّبون بالترتيب، يتوقف عند اول نجاح):
+  1) Pollinations - مجاني تماماً بدون مفتاح (قد يكون ممتلئاً احياناً)
+  2) Google Gemini - مجاني 1500 طلب/يوم (مفتاح: GEMINI_API_KEY)
+  3) Groq / OpenRouter / اي خدمة متوافقة مع OpenAI - مجاني بمفتاح
+  4) وضع احتياطي: كتابة من الملخص بدون ذكاء اصطناعي
 """
-import json, os, re, time, hashlib, html
+import json, os, re, time, hashlib, html, urllib.request
 from datetime import datetime, timezone, timedelta
-import urllib.request
 import xml.etree.ElementTree as ET
 
-# مصادر RSS العربية (يمكنك إضافة المزيد)
 FEEDS = [
     ("الجزيرة", "https://www.aljazeera.net/xml/rss/all.xml"),
     ("بي بي سي عربي", "http://feeds.bbci.co.uk/arabic/rss.xml"),
@@ -23,7 +19,7 @@ FEEDS = [
     ("الشرق الأوسط", "https://www.aawsat.com/rss"),
     ("القدس العربي", "https://www.qudsn.com/rss"),
 ]
-MAX_ARTICLES = 12          # عدد المقالات المولّدة في كل تشغيل
+MAX_ARTICLES = 12
 CACHE_FILE = "seen_hashes.json"
 OUT_FILE = "articles.json"
 
@@ -55,57 +51,90 @@ def load_seen():
     return set()
 
 def save_seen(seen):
-    json.dump(list(seen)[-500:], open(CACHE_FILE, "w", encoding="utf-8"), ensure_ascii=False)
+    json.dump(list(seen)[-600:], open(CACHE_FILE, "w", encoding="utf-8"), ensure_ascii=False)
 
-def ai_rewrite(title, summary, source):
-    """يطلب من الذكاء الاصطناعي كتابة مقال عربي كامل (4 فقرات) من العنوان والملخص."""
+def post_json(url, payload, headers, timeout=60):
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(url, data=data, headers=headers)
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read())
+
+PROMPT = (
+    "انت محرر صحفي عربي في قناة QST عربي. اكتب مقالاً إخبارياً مهنياً بالعربية الفصحى "
+    "من المعلومات التالية، مكوناً من 4 فقرات متتابعة مفصولة بفاصلة سطرين. "
+    "لا تضف عنواناً ولا تعليقاً، فقط الفقرات. لا تختلق حقائق جديدة.\n\n"
+    "المصدر: {source}\nالعنوان: {title}\nالملخص: {summary}"
+)
+
+def split_paras(text):
+    paras = [p.strip() for p in re.split(r"\n\s*\n", text.strip()) if p.strip()][:4]
+    if len(paras) < 2:
+        paras = [p.strip() for p in text.strip().split("\n") if p.strip()][:4]
+    return paras if len(paras) >= 2 else None
+
+def ai_pollinations(title, summary, source):
+    for attempt in range(2):
+        try:
+            data = post_json("https://text.pollinations.ai/openai",
+                {"model": "openai-fast", "messages": [{"role": "user", "content": PROMPT.format(title=title, summary=summary, source=source)}], "max_tokens": 700},
+                {"Content-Type": "application/json"})
+            paras = split_paras(data["choices"][0]["message"]["content"])
+            if paras: return paras, "pollinations-free"
+        except Exception as e:
+            print(f"  [Pollinations] attempt {attempt+1}: {e}")
+            time.sleep(8)
+    return None, None
+
+def ai_openai_compatible(title, summary, source):
     api_key = os.environ.get("OPENAI_API_KEY", "")
-    base = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1")
+    if not api_key: return None, None
+    base = os.environ.get("OPENAI_BASE_URL", "https://api.openai.com/v1").rstrip("/")
     model = os.environ.get("OPENAI_MODEL", "gpt-4o-mini")
-    if not api_key:
-        # بدون مفتاح: نكتب مقالاً بسيطاً من الملخص (وضع تجريبي)
-        return fallback_rewrite(title, summary, source)
-    prompt = (
-        "أنت محرر صحفي عربي في قناة QST عربي. اكتب مقالاً إخبارياً مهنياً باللغة العربية الفصحى "
-        "من المعلومات التالية، مكوناً من 4 فقرات متتابعة، كل فقرة سطر واحد مفصول بفاصلة سطرين. "
-        "لا تضف عنواناً ولا تعليقاً، فقط الفقرات. كن دقيقاً ولا تختلق حقائق جديدة.\n\n"
-        f"المصدر: {source}\nالعنوان: {title}\nالملخص: {summary}"
-    )
-    body = json.dumps({
-        "model": model,
-        "messages": [{"role": "user", "content": prompt}],
-        "temperature": 0.5,
-    }).encode("utf-8")
-    req = urllib.request.Request(
-        base.rstrip("/") + "/chat/completions",
-        data=body,
-        headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-    )
     try:
-        with urllib.request.urlopen(req, timeout=60) as r:
-            data = json.loads(r.read())
-        text = data["choices"][0]["message"]["content"].strip()
-        paras = [p.strip() for p in re.split(r"\n\s*\n", text) if p.strip()][:4]
-        if len(paras) < 2:
-            paras = [p.strip() for p in text.split("\n") if p.strip()][:4]
-        return paras
+        data = post_json(base + "/chat/completions",
+            {"model": model, "messages": [{"role": "user", "content": PROMPT.format(title=title, summary=summary, source=source)}], "temperature": 0.5, "max_tokens": 700},
+            {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"})
+        paras = split_paras(data["choices"][0]["message"]["content"])
+        if paras: return paras, "openai-compatible"
     except Exception as e:
-        print(f"AI error: {e}")
-        return fallback_rewrite(title, summary, source)
+        print(f"  [OpenAI-compatible] {e}")
+    return None, None
+
+def ai_gemini(title, summary, source):
+    api_key = os.environ.get("GEMINI_API_KEY", "")
+    if not api_key: return None, None
+    model = os.environ.get("GEMINI_MODEL", "gemini-2.0-flash")
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={api_key}"
+    try:
+        data = post_json(url,
+            {"contents": [{"parts": [{"text": PROMPT.format(title=title, summary=summary, source=source)}]}],
+             "generationConfig": {"temperature": 0.5, "maxOutputTokens": 700}},
+            {"Content-Type": "application/json"})
+        paras = split_paras(data["candidates"][0]["content"]["parts"][0]["text"])
+        if paras: return paras, "gemini-free"
+    except Exception as e:
+        print(f"  [Gemini] {e}")
+    return None, None
 
 def fallback_rewrite(title, summary, source):
     return [
         f"في تطور جديد تتابعه شبكة QST عربي، يأتي هذا الخبر من مصدر {source} بعنوان: {title}.",
         f"ووفقاً للمعلومات المتاحة: {summary}",
-        "وتشير المصادر إلى أن الملف لا يزال قيد التطور، وتتعهد شبكة QST عربي بمتابعة المستجدات ولحظة بلحظة.",
-        "وينشر هذا المقال ضمن التحديث التلقائي لنظام جمع الأخبار الذكي، ويمكن للقراء متابعة التفاصيل عبر المصدر الأصلي.",
-    ]
+        "وتشير المصادر إلى أن الملف لا يزال قيد التطور، وتتعهد شبكة QST عربي بمتابعة المستجدات لحظة بلحظة.",
+        "ينشر هذا المقال ضمن التحديث التلقائي لنظام جمع الأخبار الذكي، ويمكن للقراء متابعة التفاصيل عبر المصدر الأصلي.",
+    ], "fallback"
+
+def rewrite_article(title, summary, source):
+    for fn in (ai_pollinations, ai_openai_compatible, ai_gemini):
+        paras, provider = fn(title, summary, source)
+        if paras: return paras, provider
+    return fallback_rewrite(title, summary, source)
 
 def guess_category(title):
     t = title
-    if any(w in t for w in ["انتخاب", "برلمان", "حكومة", "وزير", "رئيس", "سفير", "مفاوض", "جيش", "غارة", "هجوم"]): return "politics"
-    if any(w in t for w in ["نفط", "سهم", "بورصة", "اقتصاد", "دولار", "ذهب", "أسعار", "تضخم", "عملة"]): return "economy"
-    if any(w in t for w in ["مقبرة", "آثار", "كتاب", "معرض", "فيلم", "موسيقى", "فن", "ثقافة"]): return "culture"
+    if any(w in t for w in ["انتخاب","برلمان","حكومة","وزير","رئيس","سفير","مفاوض","جيش","غارة","هجوم","صاروخ","قتلى","جبهة","احتلال","عدوان"]): return "politics"
+    if any(w in t for w in ["نفط","سهم","بورصة","اقتصاد","دولار","ذهب","أسعار","تضخم","عملة","بنك","تجارة","صادرات"]): return "economy"
+    if any(w in t for w in ["مقبرة","آثار","كتاب","معرض","فيلم","موسيقى","فن","ثقافة","رياضة","كرة","أولمبي"]): return "culture"
     return "world"
 
 CAT_LABEL = {"politics": "سياسة", "economy": "اقتصاد", "world": "عالم", "culture": "ثقافة"}
@@ -124,7 +153,7 @@ def main():
             xml = fetch(url)
             items = parse_feed(xml, name)
             raw.extend(items)
-            print(f"[OK] {name}: {len(items)} عنصر")
+            print(f"[OK] {name}: {len(items)}")
         except Exception as e:
             print(f"[FAIL] {name}: {e}")
         time.sleep(1)
@@ -132,37 +161,30 @@ def main():
     fresh = []
     for it in raw:
         h = hashlib.md5(it["title"].encode("utf-8")).hexdigest()[:12]
-        if h in seen:
-            continue
+        if h in seen: continue
         seen.add(h)
         it["hash"] = h
         fresh.append(it)
-        if len(fresh) >= MAX_ARTICLES:
-            break
+        if len(fresh) >= MAX_ARTICLES: break
 
     articles = []
-    now = datetime.now(timezone(timedelta(hours=3)))  # بتوقيت الرياض
-    for it in fresh:
+    now = datetime.now(timezone(timedelta(hours=3)))
+    providers_used = {}
+    for idx, it in enumerate(fresh):
         cat = guess_category(it["title"])
-        body = ai_rewrite(it["title"], it["summary"], it["source"])
-        slug = re.sub(r"[^a-z0-9]+", "-", hashlib.md5(it["title"].encode()).hexdigest()[:10])
+        body, provider = rewrite_article(it["title"], it["summary"], it["source"])
+        providers_used[provider] = providers_used.get(provider, 0) + 1
+        slug = hashlib.md5(it["title"].encode()).hexdigest()[:10]
         articles.append({
-            "id": slug,
-            "cat": cat,
-            "catLabel": CAT_LABEL[cat],
-            "title": it["title"],
-            "time": "قبل " + str((now - now).seconds // 60 or 5) + " دقائق",
-            "author": f"{it['source']} — نظام QST الذكي",
+            "id": slug, "cat": cat, "catLabel": CAT_LABEL[cat],
+            "title": it["title"], "time": f"قبل {5+idx*7} دقائق",
+            "author": f"{it['source']} - نظام QST الذكي ({provider})",
             "read": f"{max(2, len(' '.join(body))//300)} دقائق",
-            "grad": GRADS[cat],
-            "lede": body[0] if body else it["summary"],
-            "body": body,
-            "sourceLink": it["link"],
-            "generatedAt": now.isoformat(),
+            "grad": GRADS[cat], "lede": body[0], "body": body,
+            "sourceLink": it["link"], "generatedAt": now.isoformat(), "aiProvider": provider,
         })
-        print(f"[AI] كُتب مقال: {it['title'][:40]}...")
+        print(f"[AI/{provider}] {it['title'][:40]}...")
 
-    # دمج مع المقالات السابقة (احتفظ بأحدث 30)
     old = []
     if os.path.exists(OUT_FILE):
         try: old = json.load(open(OUT_FILE, encoding="utf-8"))
@@ -176,7 +198,8 @@ def main():
 
     json.dump(final, open(OUT_FILE, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
     save_seen(seen)
-    print(f"DONE: {len(articles)} مقال جديد، المجموع {len(final)} مقال في {OUT_FILE}")
+    print(f"DONE: {len(articles)} new - AI providers: {providers_used} - total {len(final)}")
 
 if __name__ == "__main__":
     main()
+      
