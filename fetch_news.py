@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-QST عربي - نظام جمع الاخبار التلقائي بالذكاء الاصطناعي
+QST عربي - نظام جمع الاخبار التلقائي بالذكاء الاصطناعي + جلب الصور
 مزودو الذكاء الاصطناعي (يُجرَّبون بالترتيب، يتوقف عند اول نجاح):
-  1) Pollinations - مجاني تماماً بدون مفتاح (قد يكون ممتلئاً احياناً)
+  1) Pollinations - مجاني تماماً بدون مفتاح
   2) Google Gemini - مجاني 1500 طلب/يوم (مفتاح: GEMINI_API_KEY)
   3) Groq / OpenRouter / اي خدمة متوافقة مع OpenAI - مجاني بمفتاح
   4) وضع احتياطي: كتابة من الملخص بدون ذكاء اصطناعي
@@ -22,11 +22,27 @@ FEEDS = [
 MAX_ARTICLES = 12
 CACHE_FILE = "seen_hashes.json"
 OUT_FILE = "articles.json"
+MEDIA_NS = "{http://search.yahoo.com/mrss/}"
 
 def fetch(url, timeout=20):
     req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0 QST-NewsBot/1.0"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
+
+def extract_image(item, desc):
+    mc = item.find(MEDIA_NS + "content")
+    if mc is not None and mc.get("url"):
+        return mc.get("url")
+    mt = item.find(MEDIA_NS + "thumbnail")
+    if mt is not None and mt.get("url"):
+        return mt.get("url")
+    enc = item.find("enclosure")
+    if enc is not None and enc.get("type", "").startswith("image") and enc.get("url"):
+        return enc.get("url")
+    m = re.search(r'<img[^>]+src=["\']([^"\']+)["\']', desc)
+    if m:
+        return m.group(1)
+    return ""
 
 def parse_feed(xml_bytes, source_name):
     items = []
@@ -38,10 +54,12 @@ def parse_feed(xml_bytes, source_name):
         title = (item.findtext("title") or "").strip()
         link = (item.findtext("link") or "").strip()
         desc = (item.findtext("description") or "").strip()
-        desc = re.sub(r"<[^>]+>", " ", desc)
-        desc = html.unescape(desc).strip()
+        desc_clean = re.sub(r"<[^>]+>", " ", desc)
+        desc_clean = html.unescape(desc_clean).strip()
+        image = extract_image(item, desc)
         if title and link:
-            items.append({"source": source_name, "title": title, "link": link, "summary": desc[:400]})
+            items.append({"source": source_name, "title": title, "link": link,
+                          "summary": desc_clean[:400], "image": image})
     return items
 
 def load_seen():
@@ -132,17 +150,19 @@ def rewrite_article(title, summary, source):
 
 def guess_category(title):
     t = title
+    if any(w in t for w in ["وظيفة","وظائف","توظيف","فرصة عمل","مقبولين","نتائج"]): return "jobs"
     if any(w in t for w in ["انتخاب","برلمان","حكومة","وزير","رئيس","سفير","مفاوض","جيش","غارة","هجوم","صاروخ","قتلى","جبهة","احتلال","عدوان"]): return "politics"
     if any(w in t for w in ["نفط","سهم","بورصة","اقتصاد","دولار","ذهب","أسعار","تضخم","عملة","بنك","تجارة","صادرات"]): return "economy"
     if any(w in t for w in ["مقبرة","آثار","كتاب","معرض","فيلم","موسيقى","فن","ثقافة","رياضة","كرة","أولمبي"]): return "culture"
     return "world"
 
-CAT_LABEL = {"politics": "سياسة", "economy": "اقتصاد", "world": "عالم", "culture": "ثقافة"}
+CAT_LABEL = {"politics": "سياسة", "economy": "اقتصاد", "world": "عالم", "culture": "ثقافة", "jobs": "وظائف"}
 GRADS = {
     "politics": "linear-gradient(135deg,#7c2d12,#ea580c)",
     "economy": "linear-gradient(135deg,#064e3b,#10b981)",
     "world": "linear-gradient(135deg,#134e4a,#0ea5e9)",
     "culture": "linear-gradient(135deg,#713f12,#eab308)",
+    "jobs": "linear-gradient(135deg,#1e3a8a,#6366f1)",
 }
 
 def main():
@@ -153,7 +173,8 @@ def main():
             xml = fetch(url)
             items = parse_feed(xml, name)
             raw.extend(items)
-            print(f"[OK] {name}: {len(items)}")
+            imgs = sum(1 for i in items if i.get("image"))
+            print(f"[OK] {name}: {len(items)} (صور: {imgs})")
         except Exception as e:
             print(f"[FAIL] {name}: {e}")
         time.sleep(1)
@@ -176,14 +197,15 @@ def main():
         providers_used[provider] = providers_used.get(provider, 0) + 1
         slug = hashlib.md5(it["title"].encode()).hexdigest()[:10]
         articles.append({
-            "id": slug, "cat": cat, "catLabel": CAT_LABEL[cat],
+            "id": slug, "cat": cat, "catLabel": CAT_LABEL.get(cat, "عالم"),
             "title": it["title"], "time": f"قبل {5+idx*7} دقائق",
             "author": f"{it['source']} - نظام QST الذكي ({provider})",
             "read": f"{max(2, len(' '.join(body))//300)} دقائق",
-            "grad": GRADS[cat], "lede": body[0], "body": body,
-            "sourceLink": it["link"], "generatedAt": now.isoformat(), "aiProvider": provider,
+            "grad": GRADS.get(cat, GRADS["world"]), "lede": body[0], "body": body,
+            "sourceLink": it["link"], "image": it.get("image", ""),
+            "generatedAt": now.isoformat(), "aiProvider": provider,
         })
-        print(f"[AI/{provider}] {it['title'][:40]}...")
+        print(f"[AI/{provider}] {it['title'][:40]}... img={'Y' if it.get('image') else 'N'}")
 
     old = []
     if os.path.exists(OUT_FILE):
@@ -202,4 +224,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-      
+  
