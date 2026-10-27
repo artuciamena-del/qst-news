@@ -1,0 +1,45 @@
+# GitHub Actions — يعمل مجاناً كل ساعة: يجلب الأخبار، يكتب المقالات بالذكاء الاصطناعي، وينشر الموقع
+name: Auto News Pipeline
+on:
+  schedule:
+    - cron: "0 * * * *"   # كل ساعة (UTC) — عدّله كما تريد
+  workflow_dispatch:        # للتشغيل اليدوي من المتصفح
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: تثبيت المتطلبات
+        run: pip install -r requirements.txt
+
+      - name: جلب الأخبار وكتابة المقالات بالذكاء الاصطناعي
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_BASE_URL: ${{ secrets.OPENAI_BASE_URL }}
+          OPENAI_MODEL: ${{ secrets.OPENAI_MODEL }}
+        run: python fetch_news.py
+
+      - name: رفع المقالات المولّدة إلى المستودع
+        run: |
+          git config user.name "qst-news-bot"
+          git config user.email "bot@qstarabia.news"
+          git add articles.json seen_hashes.json || true
+          git commit -m "auto: تحديث المقالات $(date -u +%Y-%m-%dT%H:%M)" || echo "no changes"
+          git push
+
+      - name: نشر على GitHub Pages (مجاني)
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+      - uses: actions/deploy-pages@v4

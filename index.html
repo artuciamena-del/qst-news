@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QST عربي — شبكة الأخبار</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d10;--card:#17171c;--text:#f5f5f4;--muted:#9ca3af;--accent:#f5a623;--accent2:#ea580c;--border:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
+a{color:inherit;text-decoration:none}
+.gold{background:linear-gradient(120deg,#fde68a,#f5a623 55%,#ea580c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wrap{max-width:1100px;margin:0 auto;padding:0 20px}
+.topbar{background:#08080a;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);padding:8px 0}
+.topbar .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
+.live{display:inline-flex;align-items:center;gap:6px;color:#f87171;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:#ef4444;animation:bl 1.2s infinite}
+@keyframes bl{50%{opacity:.2}}
+header{position:sticky;top:0;z-index:50;background:rgba(13,13,16,.94);backdrop-filter:blur(14px);border-bottom:1px solid var(--border)}
+header .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:12px 20px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo img{width:52px;height:52px;border-radius:50%;object-fit:cover;box-shadow:0 0 0 2px rgba(245,166,35,.35)}
+.logo .name{font-weight:900;font-size:21px;line-height:1}
+.logo .sub{font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:3px}
+nav{display:flex;gap:20px;font-size:14px;font-weight:500;color:var(--muted);margin-right:16px;flex-wrap:wrap}
+nav span{cursor:pointer;transition:color .15s}
+nav span:hover,nav span.active{color:#f5a623;font-weight:800}
+.spacer{flex:1}
+.btn-gold{padding:9px 22px;border-radius:22px;border:none;background:linear-gradient(120deg,#f5a623,#ea580c);color:#0d0d10;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+#app{padding:24px 0;min-height:60vh}
+.hero{border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(115deg,#17171c,#1e1e25 50%,#2a1f10);border:1px solid var(--border);cursor:pointer;margin-bottom:28px;padding:40px}
+.hero h1{font-size:34px;font-weight:900;line-height:1.35;margin-bottom:14px}
+.hero p{color:#c9c9cf;font-size:15.5px;line-height:1.9;max-width:640px}
+.tag{display:inline-block;background:linear-gradient(120deg,#f5a623,#ea580c);color:#0d0d10;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:900;margin-bottom:14px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:18px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s}
+.card:hover{transform:translateY(-5px);border-color:rgba(245,166,35,.5);box-shadow:0 18px 40px -12px rgba(245,166,35,.25)}
+.card .img{height:130px;position:relative}
+.card .img span{position:absolute;top:12px;right:12px;background:rgba(13,13,16,.85);color:#f5a623;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800}
+.card .body{padding:18px}
+.card h3{font-size:17px;font-weight:800;line-height:1.55;margin-bottom:8px}
+.card h3:hover{color:#f5a623}
+.card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px}
+.card .meta{font-size:11.5px;color:var(--muted)}
+.article{max-width:780px;margin:0 auto}
+.article h1{font-size:32px;font-weight:900;line-height:1.4;margin:16px 0 18px}
+.article .meta{font-size:13px;color:var(--muted);padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:22px;display:flex;flex-wrap:wrap;gap:12px}
+.article .banner{height:300px;border-radius:16px;margin-bottom:24px;position:relative;overflow:hidden}
+.article .lede{font-size:18px;font-weight:700;border-right:4px solid #f5a623;padding-right:16px;margin-bottom:22px;line-height:1.9}
+.article .body p{font-size:16.5px;line-height:2.1;margin-bottom:18px;color:#d4d4d8}
+.back{color:#f5a623;font-weight:700;font-size:13px;cursor:pointer}
+footer{background:#08080a;border-top:1px solid rgba(245,166,35,.2);padding:40px 0;margin-top:40px;color:var(--muted);font-size:13px}
+footer .wrap{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between}
+footer h4{color:#f5a623;font-weight:800;margin-bottom:10px}
+footer ul{list-style:none;line-height:2.1}
+footer li{cursor:pointer}
+footer li:hover{color:#f5a623}
+.loading{text-align:center;padding:60px;color:var(--muted)}
+.page{animation:pe .4s ease}
+@keyframes pe{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="wrap">
+  <span id="clock">--:--</span><span>الثلاثاء · 27 أكتوبر 2026</span>
+  <span class="live"><span class="dot"></span>مباشر · الرياض القاهرة بيروت الدوحة</span>
+</div></div>
+<header><div class="wrap">
+  <a class="logo" href="#/home">
+    <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/a5865bc2507d4d518ca1c58e956b8507.jpg~tplv-0es2k971ck-image.image?rcl=20261027194655366DA6EED8F9B57E4B37&rk3s=8e244e95&rrcfp=935dee89&x-expires=1793706415&x-signature=RMiCbPMLcyYfyR%2F28bN7JWBaR8c%3D" alt="QST عربي" onerror="this.style.display='none'">
+    <div><div class="name"><span class="gold">QST</span> عربي</div><div class="sub">QUEST ARABIA · NEWS NETWORK</div></div>
+  </a>
+  <nav id="nav">
+    <span data-r="home" class="active">الرئيسية</span>
+    <span data-r="cat-politics">سياسة</span>
+    <span data-r="cat-economy">اقتصاد</span>
+    <span data-r="cat-world">عالم</span>
+    <span data-r="cat-culture">ثقافة</span>
+    <span data-r="about">من نحن</span>
+  </nav>
+  <div class="spacer"></div>
+  <button class="btn-gold" onclick="location.hash='#/about'">اشترك</button>
+</div></header>
+<div class="wrap"><div id="app" class="page"><div class="loading">جاري تحميل الأخبار...</div></div></div>
+<footer><div class="wrap">
+  <div style="flex:1 1 260px"><div class="name" style="font-weight:900;font-size:20px;color:#fff;margin-bottom:10px"><span class="gold">QST</span> عربي</div>
+  <p style="line-height:1.9">شبكة إخبارية عربية — يتم تحديث المقالات تلقائياً كل ساعة عبر نظام جمع الأخبار الذكي بالذكاء الاصطناعي.</p></div>
+  <div><h4>الأقسام</h4><ul><li onclick="location.hash='#/cat-politics'">سياسة</li><li onclick="location.hash='#/cat-economy'">اقتصاد</li><li onclick="location.hash='#/cat-world'">عالم</li><li onclick="location.hash='#/cat-culture'">ثقافة</li></ul></div>
+  <div><h4>الشبكة</h4><ul><li onclick="location.hash='#/about'">من نحن</li><li>الوظائف</li><li>الإعلان لدينا</li></ul></div>
+</div><div class="wrap" style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px">© 2026 QST عربي — جميع الحقوق محفوظة</div></footer>
+
+<script>
+var FALLBACK = [
+ {id:"sample-1",cat:"politics",catLabel:"سياسة",title:"مقال نموذجي: كيف يعمل نظام جمع الأخبار الذكي في QST عربي",time:"قبل 5 دقائق",author:"نظام QST الذكي",read:"3 دقائق",grad:"linear-gradient(135deg,#7c2d12,#ea580c)",lede:"هذا مقال نموذجي يظهر قبل وصول أول دفعة من المقالات المولّدة تلقائياً.",body:["بعد تفعيل الأنبوب على GitHub Actions، ستظهر هنا المقالات الحقيقية المكتوبة بالذكاء الاصطناعي كل ساعة.","النظام يجلب الأخبار من مصادر RSS العربية المعتمدة، ثم يعيد صياغتها بمقالات من 4 فقرات.","لا يتطلب أي تدخل بشري بعد الإعداد الأول — كل شيء آلي بالكامل."]},
+];
+var ARTICLES = FALLBACK;
+var app = document.getElementById('app');
+
+function card(a){
+  return '<div class="card" onclick="location.hash=\'#/article/'+a.id+'\'">'+
+    '<div class="img" style="background:'+a.grad+'"><span>'+a.catLabel+'</span></div>'+
+    '<div class="body"><h3>'+a.title+'</h3><p>'+(a.lede||'').slice(0,90)+'...</p><div class="meta">'+a.author+' · '+a.time+'</div></div></div>';
+}
+function home(){
+  var lead = ARTICLES[0], rest = ARTICLES.slice(1);
+  app.innerHTML = '<div class="page"><div class="hero" onclick="location.hash=\'#/article/'+lead.id+'\'">'+
+    '<span class="tag">القصة الرئيسية</span><h1>'+lead.title+'</h1><p>'+(lead.lede||'')+'</p></div>'+
+    '<h2 style="font-size:24px;font-weight:900;margin-top:8px">أخبار <span class="gold">اليوم</span></h2>'+
+    '<div class="grid">'+rest.map(card).join('')+'</div></div>';
+  window.scrollTo(0,0);
+}
+function article(id){
+  var a = ARTICLES.find(function(x){return x.id===id;});
+  if(!a){app.innerHTML='<p class="loading">المقال غير موجود.</p>';return;}
+  var paras = (a.body||[]).map(function(p){return '<p>'+p+'</p>';}).join('');
+  app.innerHTML = '<div class="article page"><span class="back" onclick="location.hash=\'#/home\'">← العودة</span>'+
+    '<h1>'+a.title+'</h1><div class="meta"><span>'+a.author+'</span><span>·</span><span>'+a.time+'</span><span>·</span><span style="color:#f5a623">قراءة '+a.read+'</span></div>'+
+    '<div class="banner" style="background:'+a.grad+'"></div>'+
+    '<div class="lede">'+(a.lede||'')+'</div><div class="body">'+paras+'</div>'+
+    (a.sourceLink?'<p style="font-size:12px;color:var(--muted);margin-top:20px">المصدر الأصلي: <a href="'+a.sourceLink+'" target="_blank" rel="noopener" style="color:#f5a623">'+a.sourceLink+'</a></p>':'')+
+    '</div>';
+  window.scrollTo(0,0);
+}
+function cat(c){
+  var label={politics:'سياسة',economy:'اقتصاد',world:'عالم',culture:'ثقافة'}[c]||'الأخبار';
+  var list = ARTICLES.filter(function(a){return a.cat===c;});
+  app.innerHTML='<div class="page"><span class="back" onclick="location.hash=\'#/home\'">← الرئيسية</span>'+
+    '<h1 style="font-size:28px;font-weight:900;margin:14px 0 18px">قسم: <span class="gold">'+label+'</span></h1>'+
+    '<div class="grid">'+(list.length?list.map(card).join(''):'<p style="color:var(--muted)">لا توجد مقالات هنا بعد — ستظهر تلقائياً.</p>')+'</div></div>';
+  window.scrollTo(0,0);
+}
+function about(){
+  app.innerHTML='<div class="article page"><h1>من نحن — <span class="gold">QST عربي</span></h1>'+
+    '<p style="font-size:16px;line-height:2.1;margin-bottom:16px;color:#d4d4d8">شبكة QST عربي منصة إخبارية عربية حديثة تعمل بنظام تحرير هجين: صحفيون محترفون + نظام جمع أخبار ذكي يجلب الأخبار من مصادر RSS العربية ويعيد صياغتها بالذكاء الاصطناعي كل ساعة، دون تدخل بشري.</p>'+
+    '<p style="font-size:16px;line-height:2.1;color:#d4d4d8">قيمنا: الحقيقة أولاً، التوازن، الاستقلالية، والشفافية في كيفية توليد المحتوى الآلي.</p></div>';
+  window.scrollTo(0,0);
+}
+function route(){
+  var h=(location.hash||'#/home').replace(/^#\//,'').split('/');
+  document.querySelectorAll('#nav span').forEach(function(n){n.classList.remove('active');});
+  if(h[0]==='home'||!h[0]){home();document.querySelector('[data-r="home"]').classList.add('active');}
+  else if(h[0]==='article'){article(h[1]);}
+  else if(h[0]==='cat-politics'){cat('politics');document.querySelector('[data-r="cat-politics"]').classList.add('active');}
+  else if(h[0]==='cat-economy'){cat('economy');document.querySelector('[data-r="cat-economy"]').classList.add('active');}
+  else if(h[0]==='cat-world'){cat('world');document.querySelector('[data-r="cat-world"]').classList.add('active');}
+  else if(h[0]==='cat-culture'){cat('culture');document.querySelector('[data-r="cat-culture"]').classList.add('active');}
+  else if(h[0]==='about'){about();document.querySelector('[data-r="about"]').classList.add('active');}
+  else home();
+}
+window.addEventListener('hashchange',route);
+document.querySelectorAll('#nav span').forEach(function(n){
+  n.addEventListener('click',function(){location.hash='#/'+n.getAttribute('data-r');});
+});
+// تحميل المقالات المولّدة تلقائياً (إن وُجدت)، وإلا استخدام النموذج
+fetch('articles.json').then(function(r){return r.json();}).then(function(d){
+  if(Array.isArray(d)&&d.length){ARTICLES=d;}
+  route();
+}).catch(function(){route();});
+// الساعة
+function tick(){var d=new Date();var h=d.getUTCHours()+3;if(h>=24)h-=24;var p=function(n){return(n<10?'0':'')+n;};document.getElementById('clock').textContent=p(h)+':'+p(d.getUTCMinutes());}
+tick();setInterval(tick,30000);
+</script>
+</body>
+</html>
