@@ -10,7 +10,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.6}
 a{color:inherit;text-decoration:none}
-.gold{background:linear-gradient(120deg,#fde68a,#f5a623 55%,#ea580c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.gold{background:linear-gradient(120deg,#fde68a,var(--accent) 55%,var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .wrap{max-width:1100px;margin:0 auto;padding:0 20px}
 .topbar{background:#08080a;border-bottom:1px solid var(--border);font-size:12px;color:var(--muted);padding:8px 0}
 .topbar .wrap{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px}
@@ -25,25 +25,25 @@ header .wrap{display:flex;flex-wrap:wrap;align-items:center;gap:16px;padding:12p
 .logo .sub{font-size:10px;color:var(--muted);letter-spacing:.2em;margin-top:3px}
 nav{display:flex;gap:18px;font-size:14px;font-weight:500;color:var(--muted);margin-right:16px;flex-wrap:wrap}
 nav span{cursor:pointer;transition:color .15s}
-nav span:hover,nav span.active{color:#f5a623;font-weight:800}
+nav span:hover,nav span.active{color:var(--accent);font-weight:800}
 .spacer{flex:1}
-.btn-gold{padding:9px 22px;border-radius:22px;border:none;background:linear-gradient(120deg,#f5a623,#ea580c);color:#0d0d10;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
+.btn-gold{padding:9px 22px;border-radius:22px;border:none;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#0d0d10;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit}
 #app{padding:24px 0;min-height:60vh}
 .hero{border-radius:20px;overflow:hidden;position:relative;background:linear-gradient(115deg,#17171c,#1e1e25 50%,#2a1f10);border:1px solid var(--border);cursor:pointer;margin-bottom:24px;padding:40px;min-height:240px;display:flex;flex-direction:column;justify-content:center}
 .hero .hero-img{position:absolute;inset:0;opacity:.35;background-size:cover;background-position:center;filter:saturate(1.2)}
 .hero .hero-content{position:relative;z-index:2}
 .hero h1{font-size:34px;font-weight:900;line-height:1.35;margin-bottom:14px}
 .hero p{color:#e4e4e7;font-size:15.5px;line-height:1.9;max-width:640px}
-.tag{display:inline-block;background:linear-gradient(120deg,#f5a623,#ea580c);color:#0d0d10;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:900;margin-bottom:14px}
+.tag{display:inline-block;background:linear-gradient(120deg,var(--accent),var(--accent2));color:#0d0d10;padding:5px 16px;border-radius:20px;font-size:12px;font-weight:900;margin-bottom:14px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;margin-top:18px}
 .card{background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s}
 .card:hover{transform:translateY(-5px);border-color:rgba(245,166,35,.5);box-shadow:0 18px 40px -12px rgba(245,166,35,.25)}
 .card .img{height:150px;position:relative;overflow:hidden;background:#222}
 .card .img img{width:100%;height:100%;object-fit:cover;display:block}
-.card .img span{position:absolute;top:12px;right:12px;background:rgba(13,13,16,.85);color:#f5a623;padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;z-index:2}
+.card .img span{position:absolute;top:12px;right:12px;background:rgba(13,13,16,.85);color:var(--accent);padding:4px 12px;border-radius:20px;font-size:11px;font-weight:800;z-index:2}
 .card .body{padding:18px}
 .card h3{font-size:17px;font-weight:800;line-height:1.55;margin-bottom:8px}
-.card h3:hover{color:#f5a623}
+.card h3:hover{color:var(--accent)}
 .card p{font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:10px}
 .card .meta{font-size:11.5px;color:var(--muted)}
 .article{max-width:780px;margin:0 auto}
@@ -51,16 +51,16 @@ nav span:hover,nav span.active{color:#f5a623;font-weight:800}
 .article .meta{font-size:13px;color:var(--muted);padding-bottom:16px;border-bottom:1px solid var(--border);margin-bottom:22px;display:flex;flex-wrap:wrap;gap:12px}
 .article .banner{height:340px;border-radius:16px;margin-bottom:24px;position:relative;overflow:hidden;background:#222}
 .article .banner img{width:100%;height:100%;object-fit:cover;display:block}
-.article .lede{font-size:18px;font-weight:700;border-right:4px solid #f5a623;padding-right:16px;margin-bottom:22px;line-height:1.9}
+.article .lede{font-size:18px;font-weight:700;border-right:4px solid var(--accent);padding-right:16px;margin-bottom:22px;line-height:1.9}
 .article .body p{font-size:16.5px;line-height:2.1;margin-bottom:18px;color:#d4d4d8}
-.back{color:#f5a623;font-weight:700;font-size:13px;cursor:pointer}
+.back{color:var(--accent);font-weight:700;font-size:13px;cursor:pointer}
 .ad-slot{border:2px dashed rgba(245,166,35,.35);border-radius:14px;padding:22px;text-align:center;color:var(--muted);font-size:13px;margin:24px 0;background:rgba(245,166,35,.04);cursor:pointer}
-.ad-slot:hover{border-color:rgba(245,166,35,.7);color:#f5a623}
-.ad-slot .ad-label{font-size:10px;letter-spacing:.2em;color:#f5a623;font-weight:800;margin-bottom:6px}
+.ad-slot:hover{border-color:rgba(245,166,35,.7);color:var(--accent)}
+.ad-slot .ad-label{font-size:10px;letter-spacing:.2em;color:var(--accent);font-weight:800;margin-bottom:6px}
 .video-section{margin:32px 0}
 .video-player{position:relative;border-radius:16px;overflow:hidden;background:#000;border:1px solid var(--border);aspect-ratio:16/9}
 .video-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(135deg,#1a1a20,#0d0d10);cursor:pointer}
-.play-btn{width:72px;height:72px;border-radius:50%;background:linear-gradient(120deg,#f5a623,#ea580c);display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(245,166,35,.4)}
+.play-btn{width:72px;height:72px;border-radius:50%;background:linear-gradient(120deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;margin-bottom:14px;box-shadow:0 8px 30px rgba(245,166,35,.4)}
 .play-btn::after{content:"";border-style:solid;border-width:14px 0 14px 24px;border-color:transparent transparent transparent #0d0d10;margin-right:6px}
 .job-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;display:flex;flex-wrap:wrap;gap:14px;align-items:center;transition:border-color .2s}
 .job-card:hover{border-color:rgba(245,166,35,.5)}
@@ -70,16 +70,16 @@ nav span:hover,nav span.active{color:#f5a623;font-weight:800}
 .job-badge{background:rgba(99,102,241,.15);color:#a5b4fc;padding:4px 12px;border-radius:14px;font-size:11px;font-weight:700}
 .pkg{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:26px;text-align:center;transition:transform .25s,border-color .25s}
 .pkg:hover{transform:translateY(-4px);border-color:rgba(245,166,35,.5)}
-.pkg.featured{border-color:#f5a623;box-shadow:0 0 30px rgba(245,166,35,.15)}
+.pkg.featured{border-color:var(--accent);box-shadow:0 0 30px rgba(245,166,35,.15)}
 .pkg h3{font-size:20px;font-weight:900;margin-bottom:8px}
-.pkg .price{font-size:34px;font-weight:900;color:#f5a623;margin:10px 0}
+.pkg .price{font-size:34px;font-weight:900;color:var(--accent);margin:10px 0}
 .pkg ul{list-style:none;text-align:right;font-size:13.5px;color:var(--muted);line-height:2.2;margin:16px 0}
 footer{background:#08080a;border-top:1px solid rgba(245,166,35,.2);padding:40px 0;margin-top:40px;color:var(--muted);font-size:13px}
 footer .wrap{display:flex;flex-wrap:wrap;gap:30px;justify-content:space-between}
-footer h4{color:#f5a623;font-weight:800;margin-bottom:10px}
+footer h4{color:var(--accent);font-weight:800;margin-bottom:10px}
 footer ul{list-style:none;line-height:2.1}
 footer li{cursor:pointer}
-footer li:hover{color:#f5a623}
+footer li:hover{color:var(--accent)}
 .loading{text-align:center;padding:60px;color:var(--muted)}
 .page{animation:pe .4s ease}
 @keyframes pe{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -88,13 +88,13 @@ footer li:hover{color:#f5a623}
 </head>
 <body>
 <div class="topbar"><div class="wrap">
-  <span id="clock">--:--</span><span>الثلاثاء · 27 أكتوبر 2026</span>
+  <span id="clock">--:--</span><span>الأحد · 28 أكتوبر 2026</span>
   <span class="live"><span class="dot"></span>مباشر · الرياض القاهرة بيروت الدوحة</span>
 </div></div>
 <header><div class="wrap">
   <a class="logo" href="#/home">
     <img src="https://p16-flow-image-sign.ibyteimg.com/tos-mya-i-uo7y4d541q/a5865bc2507d4d518ca1c58e956b8507.jpg~tplv-0es2k971ck-image.image?rcl=20261027194655366DA6EED8F9B57E4B37&rk3s=8e244e95&rrcfp=935dee89&x-expires=1793706415&x-signature=RMiCbPMLcyYfyR%2F28bN7JWBaR8c%3D" alt="QST عربي" onerror="this.style.display='none'">
-    <div><div class="name"><span class="gold">QST</span> عربي</div><div class="sub">QUEST ARABIA · NEWS NETWORK</div></div>
+    <div><div class="name"><span class="gold">QST</span> عربي</div><div class="sub" id="tagline">QUEST ARABIA · NEWS NETWORK</div></div>
   </a>
   <nav id="nav">
     <span data-r="home" class="active">الرئيسية</span>
@@ -108,6 +108,7 @@ footer li:hover{color:#f5a623}
   </nav>
   <div class="spacer"></div>
   <button class="btn-gold" onclick="location.hash='#/ads'">أعلن معنا</button>
+  <button class="btn-gold" style="margin-right:8px;background:transparent;border:1px solid var(--accent);color:var(--accent)" onclick="location.href='dashboard.html'">لوحة التحكم</button>
 </div></header>
 <div class="wrap"><div class="ad-slot" onclick="location.hash='#/ads'">
   <div class="ad-label">مساحة إعلانية</div>
@@ -120,9 +121,9 @@ footer li:hover{color:#f5a623}
 </div></div>
 <footer><div class="wrap">
   <div style="flex:1 1 260px"><div class="name" style="font-weight:900;font-size:20px;color:#fff;margin-bottom:10px"><span class="gold">QST</span> عربي</div>
-  <p style="line-height:1.9">شبكة إخبارية عربية — يتم تحديث المقالات تلقائياً كل ساعة عبر نظام جمع الأخبار الذكي بالذكاء الاصطناعي.</p></div>
+  <p id="footerText" style="line-height:1.9">شبكة إخبارية عربية — يتم تحديث المقالات تلقائياً كل ساعة عبر نظام جمع الأخبار الذكي بالذكاء الاصطناعي.</p></div>
   <div><h4>الأقسام</h4><ul><li onclick="location.hash='#/cat-politics'">سياسة</li><li onclick="location.hash='#/cat-economy'">اقتصاد</li><li onclick="location.hash='#/cat-world'">عالم</li><li onclick="location.hash='#/cat-culture'">ثقافة</li><li onclick="location.hash='#/jobs'">وظائف</li></ul></div>
-  <div><h4>الشبكة</h4><ul><li onclick="location.hash='#/about'">من نحن</li><li onclick="location.hash='#/jobs'">الوظائف</li><li onclick="location.hash='#/ads'">الإعلان لدينا</li></ul></div>
+  <div><h4>الشبكة</h4><ul><li onclick="location.hash='#/about'">من نحن</li><li onclick="location.hash='#/jobs'">الوظائف</li><li onclick="location.hash='#/ads'">الإعلان لدينا</li><li onclick="location.href='dashboard.html'">لوحة التحكم</li></ul></div>
 </div><div class="wrap" style="margin-top:24px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px">© 2026 QST عربي — جميع الحقوق محفوظة</div></footer>
 <script>
 var FALLBACK = [
@@ -136,7 +137,15 @@ var JOBS = [
  {title:"محرر فيديو",company:"QST عربي",loc:"عن بعد",type:"دوام جزئي",exp:"2+ سنوات",desc:"مونتاج وتحرير المقاطع الإخبارية المرئية."},
 ];
 var ARTICLES = FALLBACK;
+var CONFIG = null;
 var app = document.getElementById('app');
+function applyConfig(){
+  if(!CONFIG)return;
+  document.documentElement.style.setProperty('--accent', CONFIG.accentColor||'#f5a623');
+  document.documentElement.style.setProperty('--accent2', CONFIG.accentColor2||'#ea580c');
+  if(CONFIG.tagline){var tl=document.getElementById('tagline');if(tl)tl.textContent=CONFIG.tagline;}
+  if(CONFIG.footerText){var ft=document.getElementById('footerText');if(ft)ft.textContent=CONFIG.footerText;}
+}
 function card(a){
   var img = a.image ? '<img src="'+a.image+'" alt="" onerror="this.parentElement.style.background=\''+a.grad+'\';this.style.display=\'none\'">' : '';
   return '<div class="card" onclick="location.hash=\'#/article/'+a.id+'\'">'+
@@ -151,6 +160,8 @@ function home(){
   var heroImg = lead.image ? '<div class="hero-img" style="background-image:url(\''+lead.image+'\')"></div>' : '';
   var mid = Math.ceil(rest.length/2);
   var row1 = rest.slice(0,mid), row2 = rest.slice(mid);
+  var vurl = (CONFIG&&CONFIG.videoUrl)?CONFIG.videoUrl:'https://www.w3schools.com/html/mov_bbb.mp4';
+  var vtitle = (CONFIG&&CONFIG.videoTitle)?CONFIG.videoTitle:'أحدث التقارير الإخبارية المرئية';
   app.innerHTML = '<div class="page">'+
     '<div class="hero" onclick="location.hash=\'#/article/'+lead.id+'\'">'+heroImg+
     '<div class="hero-content"><span class="tag">القصة الرئيسية</span><h1>'+lead.title+'</h1><p>'+(lead.lede||'')+'</p></div></div>'+
@@ -159,7 +170,7 @@ function home(){
     adBanner('بنر وسطي 728×90 — احجز مساحتك الآن')+
     '<div class="grid">'+row2.map(card).join('')+'</div>'+
     '<div class="video-section"><h2 class="section-title" style="margin-bottom:14px">مقاطع <span class="gold">فيديو</span></h2>'+
-    '<div class="video-player"><div class="video-placeholder" onclick="this.innerHTML=\'<video controls autoplay style=\\\'width:100%;height:100%\\\'><source src=\\\'https://www.w3schools.com/html/mov_bbb.mp4\\\' type=\\\'video/mp4\\\'></video>\'"><div class="play-btn"></div><div style="color:#f5a623;font-weight:800">تشغيل التقارير المرئية</div><div style="font-size:12px;color:var(--muted);margin-top:6px">أحدث التقارير الإخبارية المرئية</div></div></div></div>'+
+    '<div class="video-player"><div class="video-placeholder" onclick="this.innerHTML=\'<video controls autoplay style=\\\'width:100%;height:100%\\\'><source src=\\\''+vurl+'\\\' type=\\\'video/mp4\\\'></video>\'"><div class="play-btn"></div><div style="color:var(--accent);font-weight:800">تشغيل التقارير المرئية</div><div style="font-size:12px;color:var(--muted);margin-top:6px">'+vtitle+'</div></div></div></div>'+
     '</div>';
   window.scrollTo(0,0);
 }
@@ -169,10 +180,10 @@ function article(id){
   var paras = (a.body||[]).map(function(p){return '<p>'+p+'</p>';}).join('');
   var banner = a.image ? '<div class="banner"><img src="'+a.image+'" alt="" onerror="this.parentElement.style.background=\''+a.grad+'\';this.style.display=\'none\'"></div>' : '<div class="banner" style="background:'+a.grad+'"></div>';
   app.innerHTML = '<div class="article page"><span class="back" onclick="location.hash=\'#/home\'">← العودة</span>'+
-    '<h1>'+a.title+'</h1><div class="meta"><span>'+a.author+'</span><span>·</span><span>'+a.time+'</span><span>·</span><span style="color:#f5a623">قراءة '+a.read+'</span></div>'+
+    '<h1>'+a.title+'</h1><div class="meta"><span>'+a.author+'</span><span>·</span><span>'+a.time+'</span><span>·</span><span style="color:var(--accent)">قراءة '+a.read+'</span></div>'+
     banner+
     '<div class="lede">'+(a.lede||'')+'</div><div class="body">'+paras+'</div>'+
-    (a.sourceLink?'<p style="font-size:12px;color:var(--muted);margin-top:20px">المصدر الأصلي: <a href="'+a.sourceLink+'" target="_blank" rel="noopener" style="color:#f5a623">'+a.sourceLink+'</a></p>':'')+
+    (a.sourceLink?'<p style="font-size:12px;color:var(--muted);margin-top:20px">المصدر الأصلي: <a href="'+a.sourceLink+'" target="_blank" rel="noopener" style="color:var(--accent)">'+a.sourceLink+'</a></p>':'')+
     adBanner('إعلان داخل المقال — تواصل معنا')+
     '</div>';
   window.scrollTo(0,0);
@@ -186,32 +197,37 @@ function cat(c){
   window.scrollTo(0,0);
 }
 function jobs(){
-  var list = JOBS.map(function(j){
+  var JOBSLIST=(CONFIG&&CONFIG.jobs)||JOBS;
+  var jemail=(CONFIG?CONFIG.contactEmail||'jobs@qstarabia.news':'jobs@qstarabia.news');
+  var list = JOBSLIST.map(function(j){
     return '<div class="job-card"><div class="job-info"><h3>'+j.title+'</h3>'+
       '<div class="job-meta"><span>'+j.company+'</span><span>'+j.loc+'</span><span>'+j.type+'</span><span>'+j.exp+'</span></div>'+
       '<p style="font-size:13px;color:var(--muted);margin-top:8px">'+j.desc+'</p></div>'+
       '<span class="job-badge">متاح الآن</span>'+
-      '<button class="btn-gold" onclick="alert(\'للتقديم: jobs@qstarabia.news\')">تقديم الآن</button></div>';
+      '<button class="btn-gold" onclick="alert(\'للتقديم: '+jemail+'\')">تقديم الآن</button></div>';
   }).join('');
   app.innerHTML='<div class="page"><span class="back" onclick="location.hash=\'#/home\'">← الرئيسية</span>'+
     '<h1 style="font-size:28px;font-weight:900;margin:14px 0 6px">الوظائف <span class="gold">المتاحة</span></h1>'+
     '<p style="color:var(--muted);margin-bottom:20px;font-size:14px">انضم إلى فريق شبكة QST عربي — نحن نبني مستقبل الصحافة العربية الذكية.</p>'+
     list+
     '<div style="text-align:center;margin-top:24px;padding:20px;background:var(--card);border-radius:14px;border:1px solid var(--border)">'+
-    '<p style="font-size:14px;color:var(--muted)">لم تجد الوظيفة المناسبة؟ أرسل سيرتك الذاتية إلى <span style="color:#f5a623;font-weight:700">jobs@qstarabia.news</span></p></div></div>';
+    '<p style="font-size:14px;color:var(--muted)">لم تجد الوظيفة المناسبة؟ أرسل سيرتك الذاتية إلى <span style="color:var(--accent);font-weight:700">'+jemail+'</span></p></div></div>';
   window.scrollTo(0,0);
 }
 function ads(){
+  var aemail=(CONFIG&&CONFIG.ads?CONFIG.ads.email:'ads@qstarabia.news');
+  var pkgs='';
+  if(CONFIG&&CONFIG.ads&&CONFIG.ads.packages){
+    pkgs=CONFIG.ads.packages.map(function(p){var fs=(p.features||[]).map(function(f){return '<li>'+f+'</li>';}).join('');return '<div class="pkg '+(p.featured?'featured':'')+'"><h3>'+p.name+'</h3><div class="price">'+p.price+'<span style="font-size:14px;color:var(--muted)">'+(p.period||'')+'</span></div><ul>'+fs+'</ul><button class="btn-gold" onclick="alert(\'تواصل: '+aemail+'\')">احجز الآن</button></div>';}).join('');
+  }else{
+    pkgs='<div class="pkg"><h3>بنر أساسي</h3><div class="price">$50<span style="font-size:14px;color:var(--muted)">/شهر</span></div><ul><li>بنر 728×90 أعلى الصفحة</li><li>ظهور على جميع الصفحات</li><li>تقرير شهري بالزوار</li></ul><button class="btn-gold" onclick="alert(\'تواصل: '+aemail+'\')">احجز الآن</button></div><div class="pkg featured"><h3>باقة مميزة</h3><div class="price">$150<span style="font-size:14px;color:var(--muted)">/شهر</span></div><ul><li>بنر + إعلان داخل المقال</li><li>مقالة دعائية مدفوعة</li><li>ظهور في النشرة البريدية</li><li>تقرير أسبوعي مفصل</li></ul><button class="btn-gold" onclick="alert(\'تواصل: '+aemail+'\')">احجز الآن</button></div><div class="pkg"><h3>باقة المؤسسات</h3><div class="price" style="font-size:24px">حسب الاتفاق</div><ul><li>رعاية قسم كامل</li><li>إعلانات فيديو</li><li>حملات مستهدفة</li><li>مدير حساب مخصص</li></ul><button class="btn-gold" onclick="alert(\'تواصل: '+aemail+'\')">تواصل معنا</button></div>';
+  }
   app.innerHTML='<div class="page"><span class="back" onclick="location.hash=\'#/home\'">← الرئيسية</span>'+
     '<h1 style="font-size:28px;font-weight:900;margin:14px 0 6px">الإعلان <span class="gold">لدينا</span></h1>'+
     '<p style="color:var(--muted);margin-bottom:24px;font-size:14px">وصل إعلانك إلى ملايين القراء العرب عبر شبكة QST عربي — مواقعنا ومنصاتنا الرقمية.</p>'+
-    '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+
-    '<div class="pkg"><h3>بنر أساسي</h3><div class="price">$50<span style="font-size:14px;color:var(--muted)">/شهر</span></div><ul><li>بنر 728×90 أعلى الصفحة</li><li>ظهور على جميع الصفحات</li><li>تقرير شهري بالزوار</li></ul><button class="btn-gold" onclick="alert(\'تواصل: ads@qstarabia.news\')">احجز الآن</button></div>'+
-    '<div class="pkg featured"><h3>باقة مميزة</h3><div class="price">$150<span style="font-size:14px;color:var(--muted)">/شهر</span></div><ul><li>بنر + إعلان داخل المقال</li><li>مقالة دعائية مدفوعة</li><li>ظهور في النشرة البريدية</li><li>تقرير أسبوعي مفصل</li></ul><button class="btn-gold" onclick="alert(\'تواصل: ads@qstarabia.news\')">احجز الآن</button></div>'+
-    '<div class="pkg"><h3>باقة المؤسسات</h3><div class="price" style="font-size:24px">حسب الاتفاق</div><ul><li>رعاية قسم كامل</li><li>إعلانات فيديو</li><li>حملات مستهدفة</li><li>مدير حساب مخصص</li></ul><button class="btn-gold" onclick="alert(\'تواصل: ads@qstarabia.news\')">تواصل معنا</button></div>'+
-    '</div>'+
+    '<div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(260px,1fr))">'+pkgs+'</div>'+
     '<div style="text-align:center;margin-top:28px;padding:24px;background:var(--card);border-radius:16px;border:1px solid rgba(245,166,35,.3)">'+
-    '<h3 style="font-weight:900;margin-bottom:8px">للحجز والاستفسار</h3><p style="color:var(--muted);font-size:14px">ads@qstarabia.news</p></div></div>';
+    '<h3 style="font-weight:900;margin-bottom:8px">للحجز والاستفسار</h3><p style="color:var(--muted);font-size:14px">'+aemail+'</p></div></div>';
   window.scrollTo(0,0);
 }
 function about(){
@@ -238,6 +254,7 @@ window.addEventListener('hashchange',route);
 document.querySelectorAll('#nav span').forEach(function(n){
   n.addEventListener('click',function(){location.hash='#/'+n.getAttribute('data-r');});
 });
+fetch('config.json').then(function(r){return r.json();}).then(function(d){CONFIG=d;applyConfig();}).catch(function(){});
 fetch('articles.json').then(function(r){return r.json();}).then(function(d){
   if(Array.isArray(d)&&d.length){ARTICLES=d;}
   route();
