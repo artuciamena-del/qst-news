@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة التحكم — QST عربي</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0d0d10;--card:#17171c;--text:#f5f5f4;--muted:#9ca3af;--accent:#f5a623;--accent2:#ea580c;--border:rgba(255,255,255,.08);--green:#10b981;--red:#ef4444;--blue:#3b82f6}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+a{color:inherit;text-decoration:none}
+.gold{background:linear-gradient(120deg,#fde68a,#f5a623 55%,#ea580c);-webkit-background-clip:text;background-clip:text;color:transparent}
+.wrap{max-width:1200px;margin:0 auto;padding:0 20px}
+header{background:#08080a;border-bottom:1px solid var(--border);padding:14px 0;position:sticky;top:0;z-index:50}
+header .wrap{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.logo{font-weight:900;font-size:20px}
+.logo .sub{font-size:10px;color:var(--muted);letter-spacing:.15em}
+.spacer{flex:1}
+.btn{padding:9px 20px;border-radius:10px;border:none;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;transition:all .15s}
+.btn-gold{background:linear-gradient(120deg,#f5a623,#ea580c);color:#0d0d10}
+.btn-gold:hover{opacity:.9;transform:translateY(-1px)}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-danger{background:rgba(239,68,68,.15);color:#fca5a5;border:1px solid rgba(239,68,68,.3)}
+.btn-danger:hover{background:rgba(239,68,68,.25)}
+.btn-sm{padding:5px 12px;font-size:12px;border-radius:8px}
+#app{padding:28px 0}
+.login-box{max-width:420px;margin:60px auto;background:var(--card);border:1px solid var(--border);border-radius:18px;padding:36px;text-align:center}
+.login-box h1{font-size:24px;margin-bottom:8px}
+.login-box p{color:var(--muted);font-size:13px;margin-bottom:20px;line-height:1.8}
+.login-box input{width:100%;padding:12px 14px;border-radius:10px;border:1px solid var(--border);background:#0d0d10;color:var(--text);font-family:inherit;font-size:14px;margin-bottom:14px;direction:ltr;text-align:left}
+.login-box input:focus{outline:none;border-color:var(--accent)}
+.tabs{display:flex;gap:6px;margin-bottom:24px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:0}
+.tab{padding:10px 18px;border-radius:10px 10px 0 0;font-weight:700;font-size:13.5px;color:var(--muted);cursor:pointer;border:1px solid transparent;border-bottom:none;margin-bottom:-1px}
+.tab.active{color:var(--accent);background:var(--card);border-color:var(--border);border-bottom:1px solid var(--card)}
+.tab:hover:not(.active){color:var(--text)}
+.panel{display:none;animation:pe .3s ease}
+.panel.active{display:block}
+@keyframes pe{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.stat .label{font-size:12px;color:var(--muted);margin-bottom:6px}
+.stat .value{font-size:28px;font-weight:900}
+.stat .value.gold{color:var(--accent)}
+.stat .sub{font-size:11px;color:var(--muted);margin-top:4px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:22px;margin-bottom:18px}
+.card h3{font-size:16px;font-weight:800;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;color:var(--muted);margin-bottom:6px;font-weight:700}
+.field input,.field select,.field textarea{width:100%;padding:10px 12px;border-radius:8px;border:1px solid var(--border);background:#0d0d10;color:var(--text);font-family:inherit;font-size:13.5px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--accent)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.job-item,.pkg-item{background:#0d0d10;border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;position:relative}
+.job-item .del,.pkg-item .del{position:absolute;top:10px;left:10px}
+.badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:800}
+.badge-green{background:rgba(16,185,129,.15);color:#6ee7b7}
+.badge-red{background:rgba(239,68,68,.15);color:#fca5a5}
+.badge-blue{background:rgba(59,130,246,.15);color:#93c5fd}
+.badge-gold{background:rgba(245,166,35,.15);color:#fcd34d}
+.run-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);font-size:13px}
+.run-item:last-child{border-bottom:none}
+.toast{position:fixed;bottom:24px;right:50%;transform:translateX(50%);background:var(--card);border:1px solid var(--accent);color:var(--text);padding:12px 24px;border-radius:12px;font-size:14px;font-weight:700;z-index:100;box-shadow:0 10px 40px rgba(0,0,0,.5);display:none}
+.toast.show{display:block;animation:pe .3s}
+.article-list{max-height:400px;overflow-y:auto}
+.article-row{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px}
+.article-row:last-child{border-bottom:none}
+.article-row .title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.color-row{display:flex;gap:10px;align-items:center}
+.color-row input[type=color]{width:50px;height:38px;padding:2px;border-radius:8px;border:1px solid var(--border);background:#0d0d10;cursor:pointer}
+.save-bar{position:sticky;bottom:0;background:rgba(13,13,16,.95);backdrop-filter:blur(10px);padding:14px 0;border-top:1px solid var(--border);margin-top:20px;display:flex;gap:10px;justify-content:flex-end}
+footer{margin-top:40px;padding:24px 0;border-top:1px solid var(--border);color:var(--muted);font-size:12px;text-align:center}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <div><div class="logo"><span class="gold">QST</span> عربي — لوحة التحكم</div><div class="sub">ADMIN DASHBOARD</div></div>
+  <div class="spacer"></div>
+  <button class="btn btn-outline btn-sm" onclick="location.href='index.html'">عرض الموقع</button>
+  <button class="btn btn-danger btn-sm" id="logoutBtn" style="display:none" onclick="logout()">تسجيل الخروج</button>
+</div></header>
+<div class="wrap"><div id="app"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+var OWNER="artuciamena-del", REPO="qst-news", WF="daily-news.yml";
+var API="https://api.github.com/repos/"+OWNER+"/"+REPO;
+var token=localStorage.getItem("gh_token")||"";
+var config=null, configSha=null, articles=null;
+var app=document.getElementById('app');
+function toast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},3000);}
+function gh(path, opts){opts=opts||{};var h=opts.headers||{};h['Accept']='application/vnd.github+json';if(token)h['Authorization']='Bearer '+token;opts.headers=h;return fetch(API+path,opts).then(function(r){if(r.status===401||r.status===403)throw new Error("token_invalid");return r.json();});}
+function ghRaw(path){return fetch(API+path+(path.indexOf('?')>-1?'&':'?')+'ref=main',{headers:{'Accept':'application/vnd.github.raw'}}).then(function(r){if(!r.ok)throw new Error("fetch_fail");return r.text();});}
+function loginScreen(){
+  app.innerHTML='<div class="login-box"><h1>لوحة تحكم <span class="gold">QST عربي</span></h1><p>أدخل رمز الوصول الشخصي من GitHub (Personal Access Token) للتحكم الكامل بالموقع. يُحفظ الرمز محلياً في متصفحك فقط ولا يُرسل لأي طرف آخر.</p><input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value="'+token+'"><br><button class="btn btn-gold" onclick="doLogin()">دخول لوحة التحكم</button><p style="margin-top:16px;font-size:11px">أنشئ الرمز من: GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) — مع صلاحية <b style="color:#f5a623">repo</b></p></div>';
+}
+function doLogin(){
+  var v=document.getElementById('tokenInput').value.trim();
+  if(!v){toast("الرجاء إدخال الرمز");return;}
+  token=v;localStorage.setItem("gh_token",token);
+  init();
+}
+function logout(){localStorage.removeItem("gh_token");token="";loginScreen();document.getElementById('logoutBtn').style.display='none';}
+var TABS=[
+  {id:"overview",name:"نظرة عامة"},
+  {id:"settings",name:"إعدادات الموقع"},
+  {id:"jobs",name:"إدارة الوظائف"},
+  {id:"ads",name:"إدارة الإعلانات"},
+  {id:"articles",name:"المقالات"},
+  {id:"runs",name:"سجل التشغيل"},
+];
+var activeTab="overview";
+function render(){
+  document.getElementById('logoutBtn').style.display=token?'inline-block':'none';
+  if(!token){loginScreen();return;}
+  var tabs=TABS.map(function(t){return '<div class="tab '+(activeTab===t.id?'active':'')+'" onclick="switchTab(\''+t.id+'\')">'+t.name+'</div>';}).join('');
+  app.innerHTML='<div class="tabs">'+tabs+'</div><div id="panel"></div>';
+  renderPanel();
+}
+function switchTab(id){activeTab=id;render();}
+function renderPanel(){
+  var p=document.getElementById('panel');
+  if(activeTab==="overview")renderOverview(p);
+  else if(activeTab==="settings")renderSettings(p);
+  else if(activeTab==="jobs")renderJobs(p);
+  else if(activeTab==="ads")renderAds(p);
+  else if(activeTab==="articles")renderArticles(p);
+  else if(activeTab==="runs")renderRuns(p);
+}
+function renderOverview(p){
+  var count=articles?articles.length:0;
+  var last=articles&&articles[0]?(articles[0].generatedAt||"—"):"—";
+  var providers={};
+  if(articles)articles.forEach(function(a){var pr=a.aiProvider||"unknown";providers[pr]=(providers[pr]||0)+1;});
+  var provStr=Object.keys(providers).map(function(k){return k+": "+providers[k];}).join(" · ")||"—";
+  p.innerHTML='<div class="panel active">'+
+    '<div class="stats">'+
+    '<div class="stat"><div class="label">عدد المقالات</div><div class="value gold">'+count+'</div><div class="sub">مقال منشور</div></div>'+
+    '<div class="stat"><div class="label">آخر تحديث</div><div class="value" style="font-size:18px;padding-top:8px">'+(last!=="—"?new Date(last).toLocaleString("ar-EG"):"—")+'</div></div>'+
+    '<div class="stat"><div class="label">مزودو الذكاء الاصطناعي</div><div class="value" style="font-size:14px;padding-top:12px;color:#a5b4fc">'+provStr+'</div></div>'+
+    '<div class="stat"><div class="label">حالة الأنبوب</div><div class="value"><span class="badge badge-green">نشط</span></div><div class="sub">كل '+ (config?config.updateIntervalHours:1) +' ساعة</div></div>'+
+    '</div>'+
+    '<div class="card"><h3>تشغيل سريع</h3><p style="color:var(--muted);font-size:13.5px;margin-bottom:16px">شغّل نظام جمع الأخبار الآن لجلب أحدث المقالات بالذكاء الاصطناعي.</p>'+
+    '<button class="btn btn-gold" onclick="triggerWorkflow()">تشغيل جمع الأخبار الآن</button>'+
+    '<button class="btn btn-outline" style="margin-right:10px" onclick="switchTab(\'runs\')">عرض سجل التشغيل</button></div>'+
+    '<div class="card"><h3>معلومات سريعة</h3><div style="font-size:13.5px;line-height:2.2;color:var(--muted)">'+
+    '<div>رابط الموقع: <a href="index.html" target="_blank" style="color:#f5a623">index.html</a></div>'+
+    '<div>المستودع: '+OWNER+'/'+REPO+'</div>'+
+    '<div>التحديث التلقائي: كل '+(config?config.updateIntervalHours:1)+' ساعة</div>'+
+    '<div>الحد الأقصى للمقالات لكل جولة: '+(config?config.maxArticles:12)+'</div>'+
+    '</div></div></div>';
+}
+function triggerWorkflow(){
+  toast("جاري التشغيل...");
+  gh("/actions/workflows/"+WF+"/dispatches",{method:"POST",body:JSON.stringify({ref:"main"})}).then(function(){
+    toast("تم تشغيل الأنبوب — سيكتمل خلال دقائق");
+  }).catch(function(e){toast("فشل التشغيل — تحقق من صلاحية الرمز");});
+}
+function renderSettings(p){
+  if(!config){p.innerHTML='<div class="panel active"><p class="loading">جاري التحميل...</p></div>';return;}
+  p.innerHTML='<div class="panel active">'+
+    '<div class="card"><h3>إعدادات الموقع الأساسية</h3>'+
+    '<div class="field-row"><div class="field"><label>اسم الموقع</label><input id="s_name" value="'+config.siteName+'"></div>'+
+    '<div class="field"><label>الشعار النصي (Tagline)</label><input id="s_tag" value="'+config.tagline+'"></div></div>'+
+    '<div class="field-row"><div class="field"><label>اللون الأساسي</label><div class="color-row"><input type="color" id="s_c1" value="'+config.accentColor+'"><input id="s_c1t" value="'+config.accentColor+'" style="direction:ltr;text-align:left"></div></div>'+
+    '<div class="field"><label>اللون الثانوي</label><div class="color-row"><input type="color" id="s_c2" value="'+config.accentColor2+'"><input id="s_c2t" value="'+config.accentColor2+'" style="direction:ltr;text-align:left"></div></div></div>'+
+    '<div class="field-row-3"><div class="field"><label>عدد المقالات لكل جولة</label><input type="number" id="s_max" value="'+config.maxArticles+'"></div>'+
+    '<div class="field"><label>فترة التحديث (ساعات)</label><input type="number" id="s_int" value="'+config.updateIntervalHours+'"></div>'+
+    '<div class="field"><label>بريد التوظيف</label><input id="s_email" value="'+config.contactEmail+'" style="direction:ltr;text-align:left"></div></div>'+
+    '</div>'+
+    '<div class="card"><h3>إعدادات الفيديو</h3>'+
+    '<div class="field"><label>رابط الفيديو (mp4)</label><input id="s_vurl" value="'+config.videoUrl+'" style="direction:ltr;text-align:left"></div>'+
+    '<div class="field"><label>عنوان قسم الفيديو</label><input id="s_vtitle" value="'+config.videoTitle+'"></div></div>'+
+    '<div class="card"><h3>نص التذييل</h3><div class="field"><textarea id="s_footer" rows="2">'+config.footerText+'</textarea></div></div>'+
+    '<div class="save-bar"><button class="btn btn-outline" onclick="render()">إلغاء</button><button class="btn btn-gold" onclick="saveConfig()">حفظ الإعدادات</button></div>'+
+    '</div>';
+}
+function saveConfig(){
+  config.siteName=document.getElementById('s_name').value;
+  config.tagline=document.getElementById('s_tag').value;
+  config.accentColor=document.getElementById('s_c1').value;
+  config.accentColor2=document.getElementById('s_c2').value;
+  config.maxArticles=parseInt(document.getElementById('s_max').value)||12;
+  config.updateIntervalHours=parseInt(document.getElementById('s_int').value)||1;
+  config.contactEmail=document.getElementById('s_email').value;
+  config.videoUrl=document.getElementById('s_vurl').value;
+  config.videoTitle=document.getElementById('s_vtitle').value;
+  config.footerText=document.getElementById('s_footer').value;
+  writeConfig();
+}
+function renderJobs(p){
+  if(!config){p.innerHTML='<div class="panel active"><p>جاري التحميل...</p></div>';return;}
+  var jobs=(config.jobs||[]).map(function(j,i){
+    return '<div class="job-item"><button class="btn btn-danger btn-sm del" onclick="delJob('+i+')">حذف</button>'+
+      '<div class="field-row"><div class="field"><label>المسمى الوظيفي</label><input data-j="'+i+'" data-f="title" value="'+j.title+'"></div>'+
+      '<div class="field"><label>الشركة</label><input data-j="'+i+'" data-f="company" value="'+j.company+'"></div></div>'+
+      '<div class="field-row-3"><div class="field"><label>الموقع</label><input data-j="'+i+'" data-f="loc" value="'+j.loc+'"></div>'+
+      '<div class="field"><label>نوع الدوام</label><input data-j="'+i+'" data-f="type" value="'+j.type+'"></div>'+
+      '<div class="field"><label>الخبرة</label><input data-j="'+i+'" data-f="exp" value="'+j.exp+'"></div></div>'+
+      '<div class="field"><label>الوصف</label><input data-j="'+i+'" data-f="desc" value="'+j.desc+'"></div></div>';
+  }).join('');
+  p.innerHTML='<div class="panel active"><div class="card"><h3>الوظائف المتاحة ('+(config.jobs||[]).length+')</h3>'+jobs+
+    '<button class="btn btn-outline" onclick="addJob()">+ إضافة وظيفة</button></div>'+
+    '<div class="save-bar"><button class="btn btn-gold" onclick="saveJobs()">حفظ الوظائف</button></div></div>';
+}
+function addJob(){config.jobs=config.jobs||[];config.jobs.push({title:"وظيفة جديدة",company:"QST عربي",loc:"عن بعد",type:"دوام كامل",exp:"2+ سنوات",desc:"وصف الوظيفة"});renderJobs(document.getElementById('panel'));}
+function delJob(i){config.jobs.splice(i,1);renderJobs(document.getElementById('panel'));}
+function saveJobs(){
+  document.querySelectorAll('[data-j]').forEach(function(inp){
+    var i=parseInt(inp.getAttribute('data-j')),f=inp.getAttribute('data-f');
+    if(config.jobs[i])config.jobs[i][f]=inp.value;
+  });
+  writeConfig();
+}
+function renderAds(p){
+  if(!config){p.innerHTML='<div class="panel active"><p>جاري التحميل...</p></div>';return;}
+  var pkgs=(config.ads.packages||[]).map(function(pkg,i){
+    return '<div class="pkg-item"><button class="btn btn-danger btn-sm del" onclick="delPkg('+i+')">حذف</button>'+
+      '<div class="field-row"><div class="field"><label>اسم الباقة</label><input data-p="'+i+'" data-f="name" value="'+pkg.name+'"></div>'+
+      '<div class="field"><label>السعر</label><input data-p="'+i+'" data-f="price" value="'+pkg.price+'"></div>'+
+      '<div class="field"><label>الفترة</label><input data-p="'+i+'" data-f="period" value="'+pkg.period+'"></div></div>'+
+      '<div class="field"><label>المميزات (افصل بينها بفاصلة ،)</label><input data-p="'+i+'" data-f="features" value="'+(pkg.features||[]).join(' ، ')+'"></div>'+
+      '<div class="field"><label><input type="checkbox" data-p="'+i+'" data-f="featured" '+(pkg.featured?'checked':'')+'> باقة مميزة (موضحة)</label></div></div>';
+  }).join('');
+  p.innerHTML='<div class="panel active"><div class="card"><h3>باقات الإعلان ('+(config.ads.packages||[]).length+')</h3>'+
+    '<div class="field"><label>بريد الإعلانات</label><input id="a_email" value="'+(config.ads.email||'')+'" style="direction:ltr;text-align:left"></div>'+pkgs+
+    '<button class="btn btn-outline" onclick="addPkg()">+ إضافة باقة</button></div>'+
+    '<div class="save-bar"><button class="btn btn-gold" onclick="saveAds()">حفظ الإعدادات</button></div></div>';
+}
+function addPkg(){config.ads.packages=config.ads.packages||[];config.ads.packages.push({name:"باقة جديدة",price:"$99",period:"/شهر",features:["ميزة 1","ميزة 2"]});renderAds(document.getElementById('panel'));}
+function delPkg(i){config.ads.packages.splice(i,1);renderAds(document.getElementById('panel'));}
+function saveAds(){
+  config.ads.email=document.getElementById('a_email').value;
+  document.querySelectorAll('[data-p]').forEach(function(inp){
+    var i=parseInt(inp.getAttribute('data-p')),f=inp.getAttribute('data-f');
+    if(!config.ads.packages[i])return;
+    if(f==="features")config.ads.packages[i][f]=inp.value.split(/[،,]/).map(function(s){return s.trim();}).filter(Boolean);
+    else if(f==="featured")config.ads.packages[i][f]=inp.checked;
+    else config.ads.packages[i][f]=inp.value;
+  });
+  writeConfig();
+}
+function renderArticles(p){
+  if(!articles){p.innerHTML='<div class="panel active"><p>جاري التحميل...</p></div>';return;}
+  var rows=articles.map(function(a,i){
+    return '<div class="article-row"><span class="badge badge-gold">'+a.catLabel+'</span><span class="title">'+a.title+'</span><span style="color:var(--muted);font-size:11px;white-space:nowrap">'+(a.aiProvider||'')+'</span><span style="color:var(--muted);font-size:11px;white-space:nowrap">'+(a.image?'صورة':'بدون')+'</span></div>';
+  }).join('');
+  p.innerHTML='<div class="panel active"><div class="card"><h3>المقالات المنشورة ('+articles.length+')</h3><div class="article-list">'+rows+'</div></div></div>';
+}
+function renderRuns(p){
+  p.innerHTML='<div class="panel active"><div class="card"><h3>سجل تشغيل الأنبوب</h3><div id="runsList"><p style="color:var(--muted)">جاري التحميل...</p></div></div></div>';
+  gh("/actions/runs?per_page=10").then(function(d){
+    var list=(d.workflow_runs||[]).map(function(r){
+      var st=r.conclusion==="success"?'<span class="badge badge-green">نجاح</span>':r.conclusion==="failure"?'<span class="badge badge-red">فشل</span>':'<span class="badge badge-blue">قيد التشغيل</span>';
+      return '<div class="run-item">'+st+'<span style="flex:1">#'+r.run_number+' — '+r.name+'</span><span style="color:var(--muted);font-size:11px">'+new Date(r.created_at).toLocaleString("ar-EG")+'</span></div>';
+    }).join('')||'<p style="color:var(--muted)">لا توجد عمليات تشغيل بعد.</p>';
+    document.getElementById('runsList').innerHTML=list;
+  }).catch(function(){document.getElementById('runsList').innerHTML='<p style="color:#fca5a5">تعذر التحميل — تحقق من الرمز</p>';});
+}
+function writeConfig(){
+  toast("جاري الحفظ...");
+  var content=btoa(unescape(encodeURIComponent(JSON.stringify(config,null,2))));
+  var body={message:"Update config from dashboard",content:content,branch:"main"};
+  if(configSha)body.sha=configSha;
+  gh("/contents/config.json",{method:"PUT",body:JSON.stringify(body)}).then(function(d){
+    if(d.content&&d.content.sha)configSha=d.content.sha;
+    toast("تم الحفظ بنجاح — ستظهر التغييرات خلال دقيقة");
+  }).catch(function(e){toast("فشل الحفظ — تحقق من صلاحية الرمز (repo)");});
+}
+function loadData(){
+  var p1=ghRaw("/contents/config.json").then(function(t){config=JSON.parse(t);}).catch(function(){config=null;});
+  var p2=ghRaw("/contents/articles.json").then(function(t){try{articles=JSON.parse(t);}catch(e){articles=[];}}).catch(function(){articles=[];});
+  var p3=gh("/contents/config.json").then(function(d){if(d&&d.sha)configSha=d.sha;}).catch(function(){});
+  return Promise.all([p1,p2,p3]);
+}
+function init(){
+  if(!token){render();return;}
+  loadData().then(function(){render();}).catch(function(){render();});
+}
+init();
+</script>
+<footer><div class="wrap">لوحة تحكم QST عربي — جميع البيانات محفوظة في مستودع GitHub الخاص بك</div></footer>
+</body>
+</html>
